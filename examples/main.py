@@ -172,9 +172,9 @@ def main(dataset_name,
     print(f'test auc: {auc}')
 
     """Code that print out the learned latent coefficients"""
-    print(model.embedding.embedding)
-    print(model.linear.fc)
-    print(model.linear.bias)
+    print(model.embedding.embedding.weight)
+    print(model.linear.fc.weight)
+    print(model.linear.bias.data)
 
 
 if __name__ == '__main__':
