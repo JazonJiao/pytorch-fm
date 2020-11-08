@@ -135,7 +135,7 @@ def test(model, data_loader, device):
             y = model(fields)
             targets.extend(target.tolist())
             predicts.extend(y.tolist())
-    return roc_auc_score(targets, predicts)
+    return sum([(targets[i] - predicts[i]) ** 2 for i in range(len(targets))]) / len(targets)
 
 
 def main(dataset_name,
@@ -158,7 +158,7 @@ def main(dataset_name,
     valid_data_loader = DataLoader(valid_dataset, batch_size=batch_size, num_workers=8)
     test_data_loader = DataLoader(test_dataset, batch_size=batch_size, num_workers=8)
     model = get_model(model_name, dataset).to(device)
-    criterion = torch.nn.BCELoss()
+    criterion = torch.nn.MSELoss()
     optimizer = torch.optim.Adam(params=model.parameters(), lr=learning_rate, weight_decay=weight_decay)
     early_stopper = EarlyStopper(num_trials=2, save_path=f'{save_dir}/{model_name}.pt')
     for epoch_i in range(epoch):
@@ -172,9 +172,9 @@ def main(dataset_name,
     print(f'test auc: {auc}')
 
     """Code that print out the learned latent coefficients"""
-    print(model.embedding.embedding.weight)
-    print(model.linear.fc.weight)
-    print(model.linear.bias.data)
+    print(model.embedding.embedding)
+    print(model.linear.fc)
+    print(model.linear.bias)
 
 
 if __name__ == '__main__':
@@ -185,7 +185,7 @@ if __name__ == '__main__':
     parser.add_argument('--dataset_path', default='../ml-1m/ratings.dat',
                         help='criteo/train.txt, avazu/train, or ml-1m/ratings.dat')
     parser.add_argument('--model_name', default='fm')  # afi
-    parser.add_argument('--epoch', type=int, default=0)  # 100
+    parser.add_argument('--epoch', type=int, default=10)  # 100
     parser.add_argument('--learning_rate', type=float, default=0.001)
     parser.add_argument('--batch_size', type=int, default=2048)
     parser.add_argument('--weight_decay', type=float, default=1e-6)

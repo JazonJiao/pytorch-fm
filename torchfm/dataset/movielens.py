@@ -21,6 +21,7 @@ class MovieLens20MDataset(torch.utils.data.Dataset):
         self.items = data[:, :2].astype(np.int) - 1  # -1 because ID begins from 1
         self.targets = self.__preprocess_target(data[:, 2]).astype(np.float32)
         self.field_dims = np.max(self.items, axis=0) + 1
+        print(self.items, self.targets)
         self.user_field_idx = np.array((0, ), dtype=np.long)
         self.item_field_idx = np.array((1,), dtype=np.long)
 
@@ -31,8 +32,8 @@ class MovieLens20MDataset(torch.utils.data.Dataset):
         return self.items[index], self.targets[index]
 
     def __preprocess_target(self, target):
-        target[target <= 3] = 0
-        target[target > 3] = 1
+        #target[target <= 3] = 0
+        #target[target > 3] = 1
         return target
 
 
