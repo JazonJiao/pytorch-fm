@@ -171,19 +171,25 @@ def main(dataset_name,
     auc = test(model, test_data_loader, device)
     print(f'test auc: {auc}')
 
+    """Code that print out the learned latent coefficients"""
+    print(model.embedding.embedding)
+    print(model.linear.fc)
+    print(model.linear.bias)
+
 
 if __name__ == '__main__':
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset_name', default='criteo')
-    parser.add_argument('--dataset_path', help='criteo/train.txt, avazu/train, or ml-1m/ratings.dat')
-    parser.add_argument('--model_name', default='afi')
-    parser.add_argument('--epoch', type=int, default=100)
+    parser.add_argument('--dataset_name', default='movielens1M')
+    parser.add_argument('--dataset_path', default='../ml-1m/ratings.dat',
+                        help='criteo/train.txt, avazu/train, or ml-1m/ratings.dat')
+    parser.add_argument('--model_name', default='fm')  # afi
+    parser.add_argument('--epoch', type=int, default=0)  # 100
     parser.add_argument('--learning_rate', type=float, default=0.001)
     parser.add_argument('--batch_size', type=int, default=2048)
     parser.add_argument('--weight_decay', type=float, default=1e-6)
-    parser.add_argument('--device', default='cuda:0')
+    parser.add_argument('--device', default='cpu')  # 'cuda:0'
     parser.add_argument('--save_dir', default='chkpt')
     args = parser.parse_args()
     main(args.dataset_name,
@@ -195,3 +201,4 @@ if __name__ == '__main__':
          args.weight_decay,
          args.device,
          args.save_dir)
+
